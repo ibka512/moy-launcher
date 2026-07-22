@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - '*-dev'
+      - 'moy/**'
     paths-ignore:
       - '.idea/**'
       - '.gitattributes'
