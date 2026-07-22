@@ -1,5 +1,7 @@
 name: CI
 
+# MOY Launcher: run this workflow for every MOY development branch.
+
 on:
   push:
     branches:
