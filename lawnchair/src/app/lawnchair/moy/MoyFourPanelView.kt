@@ -128,8 +128,7 @@ class MoyFourPanelView(
         subtitle: String,
         index: String,
         action: String,
-    ): View =
-        LinearLayout(context).apply {
+    ): View = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
             setPadding(dp(18), dp(14), dp(16), dp(14))
@@ -170,15 +169,13 @@ class MoyFourPanelView(
             )
         }
 
-    private fun ordinaryDesktopButton(): View =
-        label("进入普通桌面", 16f, Color.WHITE, bold = true).apply {
+    private fun ordinaryDesktopButton(): View = label("进入普通桌面", 16f, Color.WHITE, bold = true).apply {
             gravity = Gravity.CENTER
             background = roundedBackground(Color.argb(55, 255, 255, 255), dp(18))
             setOnClickListener { dismiss() }
         }
 
-    private fun rowParams(last: Boolean = false) =
-        LinearLayout.LayoutParams(
+    private fun rowParams(last: Boolean = false) = LinearLayout.LayoutParams(
             LayoutParams.MATCH_PARENT,
             0,
             1f,
@@ -191,8 +188,7 @@ class MoyFourPanelView(
         size: Float,
         color: Int,
         bold: Boolean = false,
-    ) =
-        TextView(context).apply {
+    ) = TextView(context).apply {
             this.text = text
             textSize = size
             setTextColor(color)
@@ -200,8 +196,7 @@ class MoyFourPanelView(
             if (bold) typeface = android.graphics.Typeface.DEFAULT_BOLD
         }
 
-    private fun roundedBackground(color: Int, radius: Int) =
-        GradientDrawable().apply {
+    private fun roundedBackground(color: Int, radius: Int) = GradientDrawable().apply {
             setColor(color)
             cornerRadius = radius.toFloat()
         }
