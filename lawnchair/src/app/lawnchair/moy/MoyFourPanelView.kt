@@ -16,14 +16,17 @@
 
 package app.lawnchair.moy
 
+import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.view.Gravity
 import android.view.View
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import kotlin.math.roundToInt
 
 /**
@@ -35,6 +38,8 @@ import kotlin.math.roundToInt
 class MoyFourPanelView(
     context: Context,
     private val onDismissed: (MoyFourPanelView) -> Unit,
+    private val onOpenApps: (MoyFourPanelView) -> Unit,
+    private val onOpenRecents: (MoyFourPanelView) -> Unit,
 ) : FrameLayout(context) {
 
     init {
@@ -78,19 +83,27 @@ class MoyFourPanelView(
         )
 
         panels.addView(
-            panelRow("常用应用", "把最常用的应用留在触手可及的位置", "01", "应用"),
+            panelRow("常用应用", "打开全部应用，下一步可固定常用应用", "01", "应用") {
+                onOpenApps(this)
+            },
             rowParams(),
         )
         panels.addView(
-            panelRow("最近使用", "下一步将显示你的最近操作和继续入口", "02", "继续"),
+            panelRow("最近使用", "打开系统最近任务，继续刚才的操作", "02", "继续") {
+                onOpenRecents(this)
+            },
             rowParams(),
         )
         panels.addView(
-            panelRow("闪念", "三指截图后的信息，会在这里被整理", "03", "AI"),
+            panelRow("闪念", "写下一句话，MOY 会把它保存在本机", "03", "记录") {
+                openTextEditor("闪念", "写下一条想法…", "flash_note")
+            },
             rowParams(),
         )
         panels.addView(
-            panelRow("收藏", "保存网页、图片、文字和稍后要做的事", "04", "收纳"),
+            panelRow("收藏", "保存网页、文字或待办，之后再整理", "04", "收纳") {
+                openTextEditor("收藏", "粘贴链接、文字或待办…", "favorite_item")
+            },
             rowParams(last = true),
         )
 
@@ -128,12 +141,15 @@ class MoyFourPanelView(
         subtitle: String,
         index: String,
         action: String,
+        onClick: () -> Unit,
     ): View = LinearLayout(context).apply {
         orientation = LinearLayout.HORIZONTAL
         gravity = Gravity.CENTER_VERTICAL
         setPadding(dp(18), dp(14), dp(16), dp(14))
         background = roundedBackground(Color.argb(212, 255, 255, 255), dp(24))
         elevation = dp(2).toFloat()
+        isClickable = true
+        setOnClickListener { onClick() }
 
         addView(
             label(index, 13f, Color.rgb(89, 98, 147), bold = true).apply {
@@ -173,6 +189,25 @@ class MoyFourPanelView(
         gravity = Gravity.CENTER
         background = roundedBackground(Color.argb(55, 255, 255, 255), dp(18))
         setOnClickListener { dismiss() }
+    }
+
+    private fun openTextEditor(title: String, hint: String, preferenceKey: String) {
+        val preferences = context.getSharedPreferences("moy_panel_data", Context.MODE_PRIVATE)
+        val input = EditText(context).apply {
+            this.hint = hint
+            setText(preferences.getString(preferenceKey, ""))
+            minLines = 4
+            setPadding(dp(20), dp(12), dp(20), dp(12))
+        }
+        AlertDialog.Builder(context)
+            .setTitle(title)
+            .setView(input)
+            .setNegativeButton("取消", null)
+            .setPositiveButton("保存") { _, _ ->
+                preferences.edit().putString(preferenceKey, input.text.toString().trim()).apply()
+                Toast.makeText(context, "已保存到 MOY", Toast.LENGTH_SHORT).show()
+            }
+            .show()
     }
 
     private fun rowParams(last: Boolean = false) = LinearLayout.LayoutParams(
