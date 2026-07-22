@@ -42,6 +42,7 @@ import app.lawnchair.factory.LawnchairWidgetHolder
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.gestures.VerticalSwipeTouchController
 import app.lawnchair.gestures.config.GestureHandlerConfig
+import app.lawnchair.moy.MoyFourPanelView
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
@@ -252,6 +253,31 @@ class LawnchairLauncher : QuickstepLauncher() {
         reloadIconsIfNeeded()
 
         AppDatabase.INSTANCE.get(this).checkpointSync()
+
+        // MOY 0.1 keeps the existing Launcher3 workspace intact underneath this layer.
+        // The panel can always be dismissed back to the normal desktop.
+        dragLayer.post {
+            showMoyFourPanelIfNeeded()
+        }
+    }
+
+    private fun showMoyFourPanelIfNeeded() {
+        if (dragLayer.findViewWithTag<View>(MOY_PANEL_TAG) != null) return
+
+        val panel = MoyFourPanelView(this) { view ->
+            dragLayer.removeView(view)
+        }.apply {
+            tag = MOY_PANEL_TAG
+            alpha = 0f
+            translationY = 24f * resources.displayMetrics.density
+        }
+
+        dragLayer.addView(panel)
+        panel.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(280)
+            .start()
     }
 
     override fun collectStateHandlers(out: MutableList<StateHandler<LauncherState>>) {
@@ -504,6 +530,7 @@ class LawnchairLauncher : QuickstepLauncher() {
     }
 
     companion object {
+        private const val MOY_PANEL_TAG = "moy_four_panel"
         private const val FLAG_RECREATE = 1 shl 0
         private const val FLAG_RESTART = 1 shl 1
 
