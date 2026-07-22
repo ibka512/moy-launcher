@@ -129,59 +129,59 @@ class MoyFourPanelView(
         index: String,
         action: String,
     ): View = LinearLayout(context).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            setPadding(dp(18), dp(14), dp(16), dp(14))
-            background = roundedBackground(Color.argb(212, 255, 255, 255), dp(24))
-            elevation = dp(2).toFloat()
+        orientation = LinearLayout.HORIZONTAL
+        gravity = Gravity.CENTER_VERTICAL
+        setPadding(dp(18), dp(14), dp(16), dp(14))
+        background = roundedBackground(Color.argb(212, 255, 255, 255), dp(24))
+        elevation = dp(2).toFloat()
 
+        addView(
+            label(index, 13f, Color.rgb(89, 98, 147), bold = true).apply {
+                gravity = Gravity.CENTER
+                background = roundedBackground(Color.rgb(220, 229, 255), dp(14))
+            },
+            LinearLayout.LayoutParams(dp(48), dp(48)),
+        )
+
+        val copy = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(14), 0, dp(10), 0)
+            addView(label(title, 18f, Color.rgb(29, 34, 57), bold = true))
             addView(
-                label(index, 13f, Color.rgb(89, 98, 147), bold = true).apply {
-                    gravity = Gravity.CENTER
-                    background = roundedBackground(Color.rgb(220, 229, 255), dp(14))
+                label(subtitle, 12f, Color.rgb(96, 101, 126)).apply {
+                    setPadding(0, dp(4), 0, 0)
+                    maxLines = 1
                 },
-                LinearLayout.LayoutParams(dp(48), dp(48)),
-            )
-
-            val copy = LinearLayout(context).apply {
-                orientation = LinearLayout.VERTICAL
-                setPadding(dp(14), 0, dp(10), 0)
-                addView(label(title, 18f, Color.rgb(29, 34, 57), bold = true))
-                addView(
-                    label(subtitle, 12f, Color.rgb(96, 101, 126)).apply {
-                        setPadding(0, dp(4), 0, 0)
-                        maxLines = 1
-                    },
-                )
-            }
-            addView(
-                copy,
-                LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f),
-            )
-
-            addView(
-                label(action, 12f, Color.rgb(67, 84, 177), bold = true).apply {
-                    gravity = Gravity.CENTER
-                    background = roundedBackground(Color.rgb(230, 235, 255), dp(14))
-                    setPadding(dp(12), 0, dp(12), 0)
-                },
-                LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, dp(34)),
             )
         }
+        addView(
+            copy,
+            LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f),
+        )
+
+        addView(
+            label(action, 12f, Color.rgb(67, 84, 177), bold = true).apply {
+                gravity = Gravity.CENTER
+                background = roundedBackground(Color.rgb(230, 235, 255), dp(14))
+                setPadding(dp(12), 0, dp(12), 0)
+            },
+            LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, dp(34)),
+        )
+    }
 
     private fun ordinaryDesktopButton(): View = label("进入普通桌面", 16f, Color.WHITE, bold = true).apply {
-            gravity = Gravity.CENTER
-            background = roundedBackground(Color.argb(55, 255, 255, 255), dp(18))
-            setOnClickListener { dismiss() }
-        }
+        gravity = Gravity.CENTER
+        background = roundedBackground(Color.argb(55, 255, 255, 255), dp(18))
+        setOnClickListener { dismiss() }
+    }
 
     private fun rowParams(last: Boolean = false) = LinearLayout.LayoutParams(
-            LayoutParams.MATCH_PARENT,
-            0,
-            1f,
-        ).apply {
-            if (!last) bottomMargin = dp(12)
-        }
+        LayoutParams.MATCH_PARENT,
+        0,
+        1f,
+    ).apply {
+        if (!last) bottomMargin = dp(12)
+    }
 
     private fun label(
         text: String,
@@ -189,17 +189,17 @@ class MoyFourPanelView(
         color: Int,
         bold: Boolean = false,
     ) = TextView(context).apply {
-            this.text = text
-            textSize = size
-            setTextColor(color)
-            includeFontPadding = false
-            if (bold) typeface = android.graphics.Typeface.DEFAULT_BOLD
-        }
+        this.text = text
+        textSize = size
+        setTextColor(color)
+        includeFontPadding = false
+        if (bold) typeface = android.graphics.Typeface.DEFAULT_BOLD
+    }
 
     private fun roundedBackground(color: Int, radius: Int) = GradientDrawable().apply {
-            setColor(color)
-            cornerRadius = radius.toFloat()
-        }
+        setColor(color)
+        cornerRadius = radius.toFloat()
+    }
 
     private fun dismiss() {
         animate()
