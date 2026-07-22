@@ -264,9 +264,18 @@ class LawnchairLauncher : QuickstepLauncher() {
     private fun showMoyFourPanelIfNeeded() {
         if (dragLayer.findViewWithTag<View>(MOY_PANEL_TAG) != null) return
 
-        val panel = MoyFourPanelView(this) { view ->
-            dragLayer.removeView(view)
-        }.apply {
+        val panel = MoyFourPanelView(
+            context = this,
+            onDismissed = { view -> dragLayer.removeView(view) },
+            onOpenApps = { view ->
+                dragLayer.removeView(view)
+                stateManager.goToState(LauncherState.ALL_APPS, true)
+            },
+            onOpenRecents = { view ->
+                dragLayer.removeView(view)
+                stateManager.goToState(LauncherState.OVERVIEW, true)
+            },
+        ).apply {
             tag = MOY_PANEL_TAG
             alpha = 0f
             translationY = 24f * resources.displayMetrics.density
